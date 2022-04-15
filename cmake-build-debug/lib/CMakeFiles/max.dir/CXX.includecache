@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/btobab/CLionProjects/effective-c++/lib/matrix.h
+vector
+-
+
+/Users/btobab/CLionProjects/effective-c++/lib/matrix_grad.cpp
+matrix_grad.h
+/Users/btobab/CLionProjects/effective-c++/lib/matrix_grad.h
+cstdlib
+-
+iostream
+-
+vector
+-
+set
+-
+
+/Users/btobab/CLionProjects/effective-c++/lib/matrix_grad.h
+matrix.h
+/Users/btobab/CLionProjects/effective-c++/lib/matrix.h
+set
+-
+map
+-
+vector
+-
+

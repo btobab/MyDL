@@ -1,0 +1,6 @@
+/Users/btobab/CLionProjects/effective-c++/build/CMakeFiles/efc.dir
+/Users/btobab/CLionProjects/effective-c++/build/CMakeFiles/edit_cache.dir
+/Users/btobab/CLionProjects/effective-c++/build/CMakeFiles/rebuild_cache.dir
+/Users/btobab/CLionProjects/effective-c++/build/lib/CMakeFiles/max.dir
+/Users/btobab/CLionProjects/effective-c++/build/lib/CMakeFiles/edit_cache.dir
+/Users/btobab/CLionProjects/effective-c++/build/lib/CMakeFiles/rebuild_cache.dir

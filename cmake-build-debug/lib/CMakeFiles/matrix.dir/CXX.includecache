@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/btobab/CLionProjects/effective-c++/lib/matrix.cpp
+iostream
+-
+random
+-
+matrix.h
+/Users/btobab/CLionProjects/effective-c++/lib/matrix.h
+
+/Users/btobab/CLionProjects/effective-c++/lib/matrix.h
+vector
+-
+

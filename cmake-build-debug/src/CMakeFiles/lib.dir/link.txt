@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc liblib.a CMakeFiles/lib.dir/SeqIter.cpp.o CMakeFiles/lib.dir/matrix.cpp.o CMakeFiles/lib.dir/matrix_grad.cpp.o CMakeFiles/lib.dir/new_sequence.cpp.o CMakeFiles/lib.dir/numSequence.cpp.o CMakeFiles/lib.dir/stack.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib liblib.a

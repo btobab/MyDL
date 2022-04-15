@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libmatrix.a CMakeFiles/matrix.dir/SeqIter.cpp.o CMakeFiles/matrix.dir/matrix.cpp.o CMakeFiles/matrix.dir/matrix_grad.cpp.o CMakeFiles/matrix.dir/new_sequence.cpp.o CMakeFiles/matrix.dir/numSequence.cpp.o CMakeFiles/matrix.dir/stack.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libmatrix.a

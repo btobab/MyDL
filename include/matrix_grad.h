@@ -37,9 +37,7 @@ public:
 
     bool find_tar(int id, int &);
 
-    static void push_mag(Matrix_grad &rhs);
-
-    Matrix_grad *find_mag(int);
+    static Matrix_grad *find_mag(int);
 
     friend Matrix_grad &operator+(Matrix_grad &lhs, Matrix_grad &rhs);
 
@@ -67,14 +65,15 @@ public:
 
     static void add_mag(Matrix_grad &rhs);
 
-    void forward();
+    static void forward();
 
     void update(float lr);
 
 private:
     static std::vector<Matrix_grad *> pmag_vec;
 
-    Matrix _ma;
+    // Matrix _ma;
+    std::shared_ptr<Matrix> _spm;
     std::vector<grad> _ga_vec;
     int id;
     static int num;

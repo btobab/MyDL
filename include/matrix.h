@@ -24,8 +24,6 @@ public:
 
     Matrix &operator=(const Matrix &rhs);
 
-    ~Matrix();
-
     void print() const;
 
     Matrix &T();
@@ -59,9 +57,7 @@ public:
     Matrix &inv();
 
 private:
-    std::vector<float> _vec;
+    std::shared_ptr<std::vector<float> > _spv;
 };
-
-Matrix &LUP_solve_inverse(Matrix &A);
 
 #endif //EFFECTIVE_C___MATRIX_H

@@ -9,14 +9,14 @@
 
 int main() {
 #if test
-    Matrix ma1 = Matrix(3, 2 ,1.1, 1.0);
-    Matrix_grad mag1(ma1);
-    Matrix_grad mag2 = Matrix_grad(5.2, 1, 3);
-    Matrix_grad mag3 = Matrix_grad(1.5, 3 ,3);
-    Matrix_grad mag4 = mag1 * mag2;
-    mag2.print_all();
-    Matrix_grad tmp = mag2.T();
-    tmp.print_all();
+    Matrix_grad ma1 = Matrix_grad(3, 2, 1.1, 1.0);
+    Matrix_grad ma2 = -ma1;
+    ma2.print_matrix();
+    ma1.print_matrix();
+    Matrix_grad ma3 = ma1 + ma2;
+    ma3.print_matrix();
+    Matrix_grad ma4 = ma3.T();
+    ma4.print_matrix();
     std::cout << "#####################" << std::endl;
 #endif
 

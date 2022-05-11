@@ -5,39 +5,35 @@
 #include <matrix_grad.h>
 #include <iostream>
 #include <vector>
-#include <set>
 
 int Matrix_grad::num = 0;
-
-//std::vector<int> Matrix_grad::ma_vec;
-//std::set<int> Matrix_grad::ma_set;
 std::vector<Matrix_grad *> Matrix_grad::pmag_vec;
 
 
 Matrix_grad::Matrix_grad() {
-    _ma = Matrix();
+    _spm = std::make_shared<Matrix>();
     id = num++;
 }
 
 Matrix_grad::Matrix_grad(const std::vector<float> &vec, int row, int column) {
-    _ma = Matrix(vec, row, column);
+    _spm = std::make_shared<Matrix>(vec, row, column);
     id = num++;
 }
 
 Matrix_grad::Matrix_grad(int row, int column, float mean, float std) {
-    _ma = Matrix(row, column, mean, std);
+    _spm = std::make_shared<Matrix>(row, column, mean, std);
     id = num++;
 }
 
 Matrix_grad::Matrix_grad(const Matrix_grad &mag) {
-    _ma = mag._ma;
+    _spm = mag._spm;
     id = mag.id;
     std::vector<grad>().swap(_ga_vec);
     _ga_vec.insert(_ga_vec.begin(), mag._ga_vec.begin(), mag._ga_vec.end());
 }
 
 Matrix_grad &Matrix_grad::operator=(const Matrix_grad &rhs) {
-    _ma = rhs._ma;
+    _spm = rhs._spm;
     id = rhs.id;
     std::vector<grad>().swap(_ga_vec);
     _ga_vec.insert(_ga_vec.begin(), rhs._ga_vec.begin(), rhs._ga_vec.end());
@@ -45,12 +41,12 @@ Matrix_grad &Matrix_grad::operator=(const Matrix_grad &rhs) {
 }
 
 Matrix_grad::Matrix_grad(const Matrix &rhs) {
-    _ma = Matrix(rhs);
+    _spm = std::make_shared<Matrix>(rhs);
     id = num++;
 }
 
 Matrix_grad::Matrix_grad(float val, int row, int column) {
-    _ma = Matrix(val, row, column);
+    _spm = std::make_shared<Matrix>(val, row, column);
     id = num++;
 }
 
@@ -87,14 +83,14 @@ void Matrix_grad::add_mag(Matrix_grad &rhs) {
 }
 
 Matrix_grad &operator+(Matrix_grad &lhs, Matrix_grad &rhs) {
-    auto *tmp = new Matrix_grad(lhs._ma + rhs._ma);
-    auto *ga = new Matrix_grad::grad();
-    ga->tar = tmp->id;
-    ga->gradient = Matrix::eye(lhs._ma._row);
-    lhs._ga_vec.push_back(*ga);
+    auto *tmp = new Matrix_grad(*lhs._spm + *rhs._spm);
+    Matrix_grad::grad ga;
+    ga.tar = tmp->id;
+    ga.gradient = Matrix::eye(lhs._spm->_row);
+    lhs._ga_vec.push_back(ga);
 
-    ga->gradient = Matrix::eye(rhs._ma._row);
-    rhs._ga_vec.push_back(*ga);
+    ga.gradient = Matrix::eye(rhs._spm->_row);
+    rhs._ga_vec.push_back(ga);
 
     Matrix_grad::add_mag(lhs);
     Matrix_grad::add_mag(rhs);
@@ -107,7 +103,7 @@ Matrix_grad &Matrix_grad::operator+=(Matrix_grad &rhs) {
 }
 
 Matrix_grad &Matrix_grad::operator-() {
-    auto pmag = new Matrix_grad(-_ma);
+    auto pmag = new Matrix_grad(-*_spm);
     Matrix_grad::grad tga;
     for (int ix = 0; ix < _ga_vec.size(); ++ix) {
         tga = _ga_vec[ix];
@@ -118,15 +114,15 @@ Matrix_grad &Matrix_grad::operator-() {
 }
 
 Matrix_grad &operator-(Matrix_grad &lhs, Matrix_grad &rhs) {
-    auto *tmp = new Matrix_grad(lhs._ma - rhs._ma);
-    auto *ga = new Matrix_grad::grad();
-    ga->tar = tmp->id;
+    auto *tmp = new Matrix_grad(*lhs._spm - *rhs._spm);
+    Matrix_grad::grad ga;
+    ga.tar = tmp->id;
 
-    ga->gradient = Matrix::eye(lhs._ma._row);
-    lhs._ga_vec.push_back(*ga);
+    ga.gradient = Matrix::eye(lhs._spm->_row);
+    lhs._ga_vec.push_back(ga);
 
-    ga->gradient = - Matrix::eye(rhs._ma._row);
-    rhs._ga_vec.push_back(*ga);
+    ga.gradient = -Matrix::eye(rhs._spm->_row);
+    rhs._ga_vec.push_back(ga);
 
     Matrix_grad::add_mag(lhs);
     Matrix_grad::add_mag(rhs);
@@ -140,14 +136,13 @@ Matrix_grad &Matrix_grad::operator-=(Matrix_grad &rhs) {
 
 Matrix_grad &operator*(Matrix_grad &lhs, Matrix_grad &rhs) {
     Matrix_grad::grad ga;
-    auto tmp = new Matrix_grad(0.0, lhs._ma._row, rhs._ma._column);
-    tmp->_ma = lhs._ma * rhs._ma;
+    auto tmp = new Matrix_grad(*lhs._spm * *rhs._spm);
     ga.tar = tmp->id;
 
-    ga.gradient = rhs._ma.T();
+    ga.gradient = rhs._spm->T();
     lhs._ga_vec.push_back(ga);
 
-    ga.gradient = lhs._ma.T();
+    ga.gradient = lhs._spm->T();
     rhs._ga_vec.push_back(ga);
 
     Matrix_grad::add_mag(lhs);
@@ -162,15 +157,14 @@ Matrix_grad &Matrix_grad::operator*=(Matrix_grad &rhs) {
 
 Matrix_grad &operator/(Matrix_grad &lhs, Matrix_grad &rhs) {
     Matrix_grad::grad ga;
-    Matrix tma = rhs._ma.inv().T();
-    auto tmag = new Matrix_grad();
-    tmag->_ma = lhs._ma / rhs._ma;
+    Matrix tma = rhs._spm->inv().T();
+    auto tmag = new Matrix_grad(*lhs._spm / *rhs._spm);
     ga.tar = tmag->id;
 
     ga.gradient = tma;
     lhs._ga_vec.push_back(ga);
 
-    ga.gradient = - tma * tma * lhs._ma.T();
+    ga.gradient = - tma * tma * lhs._spm->T();
     rhs._ga_vec.push_back(ga);
 
     Matrix_grad::add_mag(lhs);
@@ -184,12 +178,12 @@ Matrix_grad &Matrix_grad::operator/=(Matrix_grad &rhs) {
 }
 
 float Matrix_grad::operator()(int i, int j) {
-    return _ma(i, j);
+    return (*_spm)(i, j);
 }
 
 void Matrix_grad::print_all() {
     std::cout << "the matrix # " << id << " is :" << std::endl;
-    _ma.print();
+    _spm->print();
     for (int ix = 0; ix < _ga_vec.size(); ++ix) {
         std::cout << "the derivation of Matrix # " << _ga_vec[ix].tar << " to Matrix # " << id << " is: \n";
         _ga_vec[ix].gradient.print();
@@ -197,12 +191,11 @@ void Matrix_grad::print_all() {
 }
 
 void Matrix_grad::print_matrix() {
-    _ma.print();
+    _spm->print();
 }
 
 Matrix_grad &Matrix_grad::T() {
-    auto mag = new Matrix_grad();
-    mag->_ma = _ma.T();
+    auto mag = new Matrix_grad(_spm->T());
     for (int i = 0; i < _ga_vec.size(); ++i) {
         grad tga;
         tga.tar = _ga_vec[i].tar;
@@ -241,6 +234,6 @@ void Matrix_grad::forward() {
 }
 
 void Matrix_grad::update(float lr) {
-    Matrix m_lr = Matrix(lr, _ma._column, _ma._column);
-    _ma = _ma - _ga_vec[0].gradient * m_lr;
+    Matrix m_lr = Matrix(lr, _spm->_column, _spm->_column);
+    *_spm -= _ga_vec[0].gradient * m_lr;
 }

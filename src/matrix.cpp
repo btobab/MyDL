@@ -9,7 +9,7 @@
 
 Matrix::Matrix(const std::vector<float> &vec, int row, int column) {
     if (row > 0 && column > 0) {
-        _vec = std::vector<float>(vec);
+        _spv = std::make_shared<std::vector<float> >(vec);
         _row = row;
         _column = column;
     } else {
@@ -21,7 +21,7 @@ Matrix::Matrix(float val, int row, int column) {
     if (row >= 0 && column >= 0) {
         _row = row;
         _column = column;
-        _vec = std::vector<float>(row * column, val);
+        _spv = std::make_shared<std::vector<float> >(row * column, val);
     } else {
         std::cerr << "row or column is invalid";
     }
@@ -33,8 +33,9 @@ Matrix::Matrix(int row, int column, float mean, float std) {
         std::normal_distribution<float> distribution(mean, std);
         _row = row;
         _column = column;
+        _spv = std::make_shared<std::vector<float> >(row * column);
         for (int i = 0; i < row * column; ++i) {
-            _vec.push_back(distribution(generator));
+            _spv->at(i) = distribution(generator);
         }
     } else {
         std::cerr << "argument is invalid";
@@ -42,35 +43,30 @@ Matrix::Matrix(int row, int column, float mean, float std) {
 }
 
 Matrix::Matrix(const Matrix &rhs) {
-    _vec = std::vector<float>(rhs._vec);
+    _spv = rhs._spv;
     _row = rhs._row;
     _column = rhs._column;
 }
 
 Matrix &Matrix::operator=(const Matrix &rhs) {
-    std::vector<float>().swap(_vec);
-    _vec = std::vector<float>(rhs._vec);
+    _spv = rhs._spv;
     _row = rhs._row;
     _column = rhs._column;
     return *this;
 }
 
-Matrix::~Matrix() {
-    std::vector<float>().swap(_vec);
-}
-
 void Matrix::print() const {
     std::cout << "row: " << _row << " column: " << _column << std::endl;
     std::cout << "elements of matrix: " << std::endl;
-    for (int i = 0; i < _vec.size(); ++i) {
+    for (int i = 0; i < _spv->size(); ++i) {
         std::cout << "\t";
-        std::cout << _vec[i] << (!((i + 1) % _column) ? "\t\n" : "\t");
+        std::cout << _spv->at(i) << (!((i + 1) % _column) ? "\t\n" : "\t");
     }
 }
 
 float Matrix::operator()(int i, int j) {
     if (i >= 0 && j >= 0) {
-        return _vec[i * _column + j];
+        return _spv->at(i * _column + j);
     } else {
         std::cerr << "argument is invalid";
         return 0.0;
@@ -82,7 +78,7 @@ Matrix &Matrix::T() {
     auto ma = new Matrix(vec, _column, _row);
     for (int i = 0; i < _column; ++i) {
         for (int j = 0; j < _row; ++j) {
-            ma->_vec.push_back(_vec[j * _column + i]);
+            ma->_spv->push_back(_spv->at(j * _column + i));
         }
     }
     return *ma;
@@ -92,18 +88,18 @@ Matrix &Matrix::broadcast(bool is_row, int val) {
     auto tmp = new Matrix(*this);
     if (is_row) {
         tmp->_row = val;
-        tmp->_vec.resize(tmp->_row * tmp->_column);
+        tmp->_spv->resize(tmp->_row * tmp->_column);
         for (int ix = 1; ix < tmp->_row; ++ix) {
             for (int j = 0; j < tmp->_column; ++j) {
-                tmp->_vec[ix * tmp->_column + j] = tmp->_vec[j];
+                tmp->_spv->at(ix * tmp->_column + j) = tmp->_spv->at(j);
             }
         }
     } else {
         tmp->_column = val;
-        tmp->_vec.resize(tmp->_row * tmp->_column);
+        tmp->_spv->resize(tmp->_row * tmp->_column);
         for (int ix = 1; ix < tmp->_column; ++ix) {
             for (int j = 0; j < tmp->_row; ++j) {
-                tmp->_vec[ix * tmp->_row + j] = tmp->_vec[j];
+                tmp->_spv->at(ix * tmp->_row + j) = tmp->_spv->at(j);
             }
         }
     }
@@ -112,7 +108,7 @@ Matrix &Matrix::broadcast(bool is_row, int val) {
 
 
 Matrix &operator+(Matrix &lhs, Matrix &rhs) {
-    Matrix lma, rma, *tmp = nullptr;
+    Matrix lma, rma, *tmp;
     if (lhs._row == rhs._row && lhs._column == rhs._column) {
         lma = Matrix(lhs);
         rma = Matrix(rhs);
@@ -142,7 +138,7 @@ Matrix &operator+(Matrix &lhs, Matrix &rhs) {
     tmp = new Matrix(lma);
     for (int i = 0; i < _row; ++i) {
         for (int j = 0; j < _column; ++j) {
-            tmp->_vec[i * _column + j] += rma._vec[i * _column + j];
+            tmp->_spv->at(i * _column + j) += rma._spv->at(i * _column + j);
         }
     }
     return *tmp;
@@ -157,7 +153,7 @@ Matrix &Matrix::operator-() {
     std::vector<float>vec;
     vec.resize(_row * _column);
     for (int ix = 0; ix < _row * _column; ++ix) {
-        vec[ix] = -_vec[ix];
+        vec[ix] = -_spv->at(ix);
     }
     auto pma = new Matrix(vec, _row, _column);
     return *pma;
@@ -174,7 +170,7 @@ Matrix &Matrix::operator-=(Matrix &rhs) {
 }
 
 Matrix &operator*(Matrix &lhs, Matrix &rhs) {
-    Matrix tmp, tma, *ma = nullptr;
+    Matrix tmp, tma, *ma;
     if (lhs._column == rhs._row) {
         tmp = Matrix(lhs);
         tma = Matrix(rhs);
@@ -196,7 +192,7 @@ Matrix &operator*(Matrix &lhs, Matrix &rhs) {
             for (int k = 0; k < tma._row; ++k) {
                 tmp_v += tmp(i, k) * tma(k, j);
             }
-            ma->_vec[i * ma->_column + j] = tmp_v;
+            ma->_spv->at(i * ma->_column + j) = tmp_v;
         }
     }
     return *ma;
@@ -219,13 +215,13 @@ Matrix &Matrix::operator/=(Matrix &rhs) {
 }
 
 Matrix &Matrix::eye(int row) {
-    auto vec = new std::vector<float>();
-    auto tma = new Matrix(*vec, row, row);
+    std::vector<float> vec;
+    auto tma = new Matrix(vec, row, row);
     for (int i = 0; i < row * row; ++i) {
         if (i % row == i / row) {
-            tma->_vec.push_back(1.0);
+            tma->_spv->push_back(1.0);
         } else {
-            tma->_vec.push_back(0.0);
+            tma->_spv->push_back(0.0);
         }
     }
     return *tma;
@@ -369,7 +365,6 @@ Matrix &Matrix::inv() {
         for (int j = 0; j < n; j++)
             ad_l[i][j] /= det_l;
 
-
     //矩阵a
     std::vector<float> vec1;
     for (int ix = 0; ix < n; ++ix) {
@@ -385,6 +380,6 @@ Matrix &Matrix::inv() {
         }
     }
     Matrix ma2(vec2, n, n);
-    Matrix *m_inv_a = new Matrix(ma2 * ma1);
+    auto m_inv_a = new Matrix(ma2 * ma1);
     return *m_inv_a;
 }

@@ -57,10 +57,10 @@ RM = /opt/homebrew/Cellar/cmake/3.22.3/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/btobab/CLionProjects/effective-c++
+CMAKE_SOURCE_DIR = /Users/btobab/GitHub/MyDL
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/btobab/CLionProjects/effective-c++/build
+CMAKE_BINARY_DIR = /Users/btobab/GitHub/MyDL/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/btobab/CLionProjects/effective-c++/build/CMakeFiles /Users/btobab/CLionProjects/effective-c++/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/btobab/GitHub/MyDL/build/CMakeFiles /Users/btobab/GitHub/MyDL/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/btobab/CLionProjects/effective-c++/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/btobab/GitHub/MyDL/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -130,17 +130,17 @@ efc/fast:
 .PHONY : efc/fast
 
 #=============================================================================
-# Target rules for targets named max
+# Target rules for targets named lib
 
 # Build rule for target.
-max: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 max
-.PHONY : max
+lib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib
+.PHONY : lib
 
 # fast build rule for target.
-max/fast:
-	$(MAKE) $(MAKESILENT) -f lib/CMakeFiles/max.dir/build.make lib/CMakeFiles/max.dir/build
-.PHONY : max/fast
+lib/fast:
+	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/lib.dir/build.make src/CMakeFiles/lib.dir/build
+.PHONY : lib/fast
 
 main.o: main.cpp.o
 .PHONY : main.o
@@ -175,7 +175,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... efc"
-	@echo "... max"
+	@echo "... lib"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

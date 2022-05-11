@@ -8,12 +8,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/btobab/CLionProjects/effective-c++/main.cpp" "CMakeFiles/efc.dir/main.cpp.o" "gcc" "CMakeFiles/efc.dir/main.cpp.o.d"
+  "/Users/btobab/GitHub/MyDL/main.cpp" "CMakeFiles/efc.dir/main.cpp.o" "gcc" "CMakeFiles/efc.dir/main.cpp.o.d"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/Users/btobab/CLionProjects/effective-c++/build/lib/CMakeFiles/max.dir/DependInfo.cmake"
+  "/Users/btobab/GitHub/MyDL/build/src/CMakeFiles/lib.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

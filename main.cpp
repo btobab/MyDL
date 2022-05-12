@@ -2,7 +2,7 @@
 #include <matrix_grad.h>
 #include <iostream>
 
-#define loop 1000
+#define loop 10000
 #define test false
 #define DL true
 #define LEARNING_RATE 1e-6
@@ -29,19 +29,21 @@ int main() {
     Matrix_grad k_hat, b_hat, y_hat, div, result;
     k_hat = Matrix_grad(3.0, 2, 3);
     b_hat = Matrix_grad(1.0, 1, 3);
-    y_hat = x * k_hat - b_hat;
-    div = y - y_hat;
-    result = div.T() * div;
+
     for (int ix = 0; ix < loop; ++ix) {
+        y_hat = x * k_hat - b_hat;
+        div = y - y_hat;
+        result = div.T() * div;
         Matrix_grad::forward();
         k_hat.update(LEARNING_RATE);
-        b_hat.update(2 * LEARNING_RATE);
+        b_hat.update(LEARNING_RATE);
 
         if (ix % 100 == 0) {
             std::cout << "loop: " << ix << std::endl;
             k_hat.print_matrix();
             b_hat.print_matrix();
         }
+        Matrix_grad::clear_gradient();
     }
     k_hat.print_matrix();
     b_hat.print_matrix();

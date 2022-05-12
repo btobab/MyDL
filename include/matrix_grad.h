@@ -69,10 +69,11 @@ public:
 
     void update(float lr);
 
+    static void clear_gradient();
+
 private:
     static std::vector<Matrix_grad *> pmag_vec;
 
-    // Matrix _ma;
     std::shared_ptr<Matrix> _spm;
     std::vector<grad> _ga_vec;
     int id;

@@ -237,3 +237,11 @@ void Matrix_grad::update(float lr) {
     Matrix m_lr = Matrix(lr, _spm->_column, _spm->_column);
     *_spm -= _ga_vec[0].gradient * m_lr;
 }
+
+void Matrix_grad::clear_gradient() {
+    int len = (int) pmag_vec.size();
+    for (int i = 0; i < len; ++i) {
+        std::vector<grad>().swap(pmag_vec[i]->_ga_vec);
+    }
+    std::vector<Matrix_grad *>().swap(pmag_vec);
+}

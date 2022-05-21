@@ -3,20 +3,24 @@
 #include <iostream>
 
 #define loop 10000
-#define test false
-#define DL true
+#define test true
+#define DL false
 #define LEARNING_RATE 1e-6
 
 int main() {
 #if test
-    Matrix_grad ma1 = Matrix_grad(3, 2, 1.1, 1.0);
-    Matrix_grad ma2 = -ma1;
-    ma2.print_matrix();
-    ma1.print_matrix();
-    Matrix_grad ma3 = ma1 + ma2;
-    ma3.print_matrix();
-    Matrix_grad ma4 = ma3.T();
-    ma4.print_matrix();
+    Matrix_grad mag1 = Matrix_grad(3, 2, 1.1, 1.0);
+    Matrix_grad mag2 = -mag1;
+    // mag2.print_matrix();
+    // mag1.print_matrix();
+    Matrix ma3 = Matrix(3, 3, 1.0, 2.0);
+    Matrix ma4 = ma3;
+    ma4 -= ma3;
+    Matrix ma5 = ma4 * ma3;
+    ma3.print();
+    ma4.print();
+    ma5.print();
+    std::cout << "test" << std::endl;
     std::cout << "#####################" << std::endl;
 #endif
 

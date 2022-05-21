@@ -30,31 +30,31 @@ public:
 
     static Matrix &eye(int);
 
-    friend Matrix &operator+(Matrix &lhs, Matrix &rhs);
+    friend Matrix operator+(const Matrix &lhs, const Matrix &rhs);
 
-    friend Matrix &operator*(Matrix &lhs, Matrix &rhs);
+    friend Matrix operator*(const Matrix &lhs, const Matrix &rhs);
 
-    friend Matrix &operator-(Matrix &lhs, Matrix &rhs);
+    friend Matrix operator-(const Matrix &lhs, const Matrix &rhs);
 
-    friend Matrix &operator/(Matrix &lhs, Matrix &rhs);
+    friend Matrix operator/(const Matrix &lhs, const Matrix &rhs);
 
-    Matrix &operator-();
+    Matrix operator-() const;
 
-    Matrix &operator+=(Matrix &rhs);
+    Matrix &operator+=(const Matrix &rhs);
 
-    Matrix &operator-=(Matrix &rhs);
+    Matrix &operator-=(const Matrix &rhs);
 
-    Matrix &operator*=(Matrix &rhs);
+    Matrix &operator*=(const Matrix &rhs);
 
-    Matrix &operator/=(Matrix &rhs);
+    Matrix &operator/=(const Matrix &rhs);
 
-    float operator()(int, int);
+    float operator()(int, int) const;
 
-    Matrix &broadcast(bool, int);
+    Matrix &broadcast(bool, int) const;
 
     //std::vector<float> &getVec();
 
-    Matrix &inv();
+    Matrix inv() const;
 
 private:
     std::shared_ptr<std::vector<float> > _spv;
